@@ -30,7 +30,7 @@ def make_new_student(first_name, last_name, github):
         VALUES (?, ?, ?)
         """ 
     db_cursor.execute(QUERY,(first_name, last_name, github))
-    db_connection.commit()
+    db_connection.commit() #commiting new data we are inserting to the table
     print "Successfully added student: %s %s" % (first_name, last_name)
 
 def get_by_title(title):
@@ -42,7 +42,7 @@ def get_by_title(title):
         WHERE title = ?
         """
     db_cursor.execute(QUERY, (title,))
-    row = db_cursor.fetchone()
+    row = db_cursor.fetchone() #fetching the data that exists in table
     print "%s is about %s. The max grade is %s." % (
         row[0], row[1], row[2])
 
@@ -63,6 +63,18 @@ def get_grade(project_title, student_github):
 
     """When indexing from the row, refer to order we are SELECTing"""
     
+def add_grade(student_github, project_title, grade):
+    """Inserting new rows to Grades table."""
+
+    QUERY = """
+    INSERT INTO Grades
+    VALUES (?, ?, ?)
+    """
+    db_cursor.execute(QUERY, (student_github, project_title, grade))
+    db_connection.commit()
+    print "Successfully %s's grade of %s for %s" % (
+        student_github, grade, project_title)
+
 
 def handle_input():
     """Main loop.
@@ -93,6 +105,10 @@ def handle_input():
         elif command == "grade":
             project_title, student_github = args
             get_grade(project_title, student_github)
+
+        elif command == "new_grade":
+            student_github, project_title, grade = args #unpack!
+            add_grade(student_github, project_title, grade)
 
 
 
